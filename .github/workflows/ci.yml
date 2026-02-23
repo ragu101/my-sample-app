@@ -1,0 +1,40 @@
+name: CI — Build & Test
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['sample-app/**']
+
+permissions:
+  contents: read
+  checks: write
+
+defaults:
+  run:
+    working-directory: sample-app
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build
+        run: mvn compile -B
+
+      - name: Run tests
+        run: mvn test -B
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: sample-app/target/surefire-reports/

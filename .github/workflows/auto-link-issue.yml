@@ -87,9 +87,7 @@ jobs:
           
           echo "Appending 'Closes $REFERENCE' to PR body..."
           
-          NEW_BODY="$PR_BODY
-
-Closes $REFERENCE"
+          NEW_BODY=$(printf "%s\n\nCloses %s" "$PR_BODY" "$REFERENCE")
 
           # Update PR body
           gh pr edit "$PR_URL" --body "$NEW_BODY"

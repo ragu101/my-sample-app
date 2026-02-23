@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   enforce:
+    name: SDLC Enforce
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

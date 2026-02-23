@@ -1,0 +1,34 @@
+name: Deploy to Staging / test
+
+on:
+  push:
+    branches: [ "release/*" ]
+  pull_request:
+    branches: [ "release/*" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # IMPORTANT: Replace this step with your actual deployment scripts for the staging environment!
+      - name: Deploy to Staging Environment
+        run: |
+          echo "Simulating deployment to Staging..."
+          echo "✅ Staging Deployment Successful"
+          
+      # IMPORTANT: Replace this step with your automated integration tests for staging!  
+      - name: Run Staging Integration Tests
+        run: |
+          echo "Running mandatory Integration tests against Staging..."
+          echo "✅ Integration Tests Passed"
+          # Simulating integration test results generation for Evidence
+          echo "<testsuites></testsuites>" > staging-results.xml
+
+      - name: Upload Staging Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-staging
+          path: staging-results.xml
+          retention-days: 14

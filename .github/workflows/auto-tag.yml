@@ -1,0 +1,46 @@
+name: Auto-Tag on Push
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+
+permissions:
+  contents: write
+
+jobs:
+  auto-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Tag
+        run: |
+          SHA_SHORT=$(git rev-parse --short HEAD)
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          
+          if [[ "$BRANCH_NAME" == "main" ]]; then
+            NEW_TAG="dev-${SHA_SHORT}"
+            echo "Branch is main. Generating DEV tag: $NEW_TAG"
+          elif [[ "$BRANCH_NAME" == release/* ]]; then
+            VERSION=${BRANCH_NAME#release/}
+            NEW_TAG="${VERSION}-rc-${SHA_SHORT}"
+            echo "Branch is a release branch. Generating RC tag: $NEW_TAG"
+          else
+            echo "Branch is not targeted for auto-tagging. Exiting."
+            exit 0
+          fi
+          
+          echo "tag_name=${NEW_TAG}" >> "$GITHUB_ENV"
+
+      - name: Push Tag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git tag ${{ env.tag_name }}
+          git push origin ${{ env.tag_name }}
+          echo "Successfully pushed tag: ${{ env.tag_name }}"

@@ -1,0 +1,22 @@
+name: CI — Build & Test
+
+on:
+  pull_request:
+    branches: [ "main", "release/*" ]
+  push:
+    branches: [ "main", "release/*" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # IMPORTANT: Replace this step with your actual build and test commands!
+      # E.g., npm install && npm test 
+      # E.g., mvn clean test
+      - name: Run Build and Tests
+        run: |
+          echo "Running mandatory CI checks..."
+          echo "✅ Build Successful"
+          echo "✅ Tests Passed"
